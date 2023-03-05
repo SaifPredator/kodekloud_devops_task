@@ -1,0 +1,104 @@
+Question: The Nautilus DevOps team had a meeting with development team last week to discuss about some new requirements for an application deployment. Team is working on to setup a mariadb database server on Nautilus DB Server in Stratos Datacenter. They want to setup the same using Puppet. Below you can find more details about the requirements:
+
+Create a puppet programming file ecommerce.pp under /etc/puppetlabs/code/environments/production/manifests directory on puppet master node i.e on Jump Server. Define a class mysql_database in puppet programming code and perform below mentioned tasks:
+
+Install package mariadb-server (whichever version is available by default in yum repo) on puppet agent node i.e on DB Server also start its service.
+
+Create a database kodekloud_db2 , a database userkodekloud_roy and set passwordB4zNgHA7Ya for this new user also remember host should be localhost. Finally grant full permissions to this newly created user on newly created database.
+
+Make sure to create single puppet programming file ecommerce.pp to do these all tasks.
+oot@jump_host /# cd /etc/puppetlabs/code/environments/production/manifests/
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# ll
+
+total 0
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests#
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# vi ecommerce.pp
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# cat ecommerce.pp
+
+
+
+class mysql_database {
+    package {'mariadb-server':
+      ensure => installed
+    }
+
+    service {'mariadb':
+        ensure    => running,
+        enable    => true,
+    }    
+
+    mysql::db { 'kodekloud_db2':
+      user     => 'kodekloud_roy',
+      password => 'B4zNgHA7Ya',
+      host     => 'localhost',
+      grant    => ['ALL'],
+    }
+}
+
+node 'stdb01.stratos.xfusioncorp.com' {
+  include mysql_database
+}
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# puppet parser validate   ecommerce.pp
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests#
+###Login on database server  (stdb01 ) & switch to root  user 
+root@jump_host /# ssh peter@stdb01
+
+The authenticity of host 'stdb01 (172.16.239.10)' can't be established.
+
+ECDSA key fingerprint is SHA256:w9cDRojDoclOxdu1W23Ns2HPyANPrDzhk9VfqtTDoJQ.
+
+ECDSA key fingerprint is MD5:a8:3b:55:35:c2:5c:56:76:c8:d0:78:13:7a:4d:8b:e1.
+
+Are you sure you want to continue connecting (yes/no)? yes
+
+Warning: Permanently added 'stdb01,172.16.239.10' (ECDSA) to the list of known hosts.
+
+peter@stdb01's password:
+
+[peter@stdb01 ~]$ sudo su -
+
+We trust you have received the usual lecture from the local System
+
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+
+    #2) Think before you type.
+
+    #3) With great power comes great responsibility.
+
+[sudo] password for peter:
+
+[root@stdb01 ~]#
+####Run Puppet agent to pull the configuration from puppet server 
+[root@stapp01 ~]# puppet agent -tv
+
+Info: Using configured environment 'production'
+
+Info: Retrieving pluginfacts
+
+Info: Retrieving plugin
+
+Info: Retrieving locales
+
+Info: Loading facts
+
+Info: Caching catalog for stdb01.stratos.xfusioncorp.com
+
+Info: Applying configuration version '1624860136'
+
+Notice: Applied catalog in 0.09 seconds
+
+[root@stdb01 ~]#
+####check mariadb database server status
+
+      systemctl status mariadb 
+
+### Validate the task by running 
+mysql -u kodekloud_roy -p kodekloud_db2 -h localhost
+#### thats it click and finish the task
