@@ -1,0 +1,12 @@
+The Nautilus DevOps team has some conditional data present on App Server 2 in Stratos Datacenter. There is a container ubuntu_latest running on the same server. We received a request to copy some of the data from the docker host to the container. Below are more details about the task:
+
+On App Server 2 in Stratos Datacenter copy an encrypted file /tmp/nautilus.txt.gpg from docker host to ubuntu_latest container (running on same server) in /usr/src/ location. Please do not try to modify this file in any way.
+login on app server
+[thor@jump_host/]$ ssh steve@stapp02
+[steve@stapp02 ~]$ sudo su -
+Run Below command to check existing docker container running    
+[root@stapp02 ~]# docker ps
+copy an encrypted file /tmp/nautilus.txt.gpg on docker container ubuntu_latest
+[root@stapp02 ~]# docker cp /tmp/nautilus.txt.gpg ubuntu_latest:/usr/src
+Validate the task by running the command
+[root@stapp02 ~]# docker exec ubuntu_latest  ls -ltr /usr/src
