@@ -1,0 +1,30 @@
+a. Create an inventory file ~/playbook/inventory on jump host and add all app servers in it.
+
+b. Create a playbook ~/playbook/playbook.yml to create a blank file /home/web.txt on all app servers.
+
+c. The /home/web.txt file permission must be 0755.
+Create a playbook.yaml
+
+- name: Create file in appservers
+
+  hosts: stapp01, stapp02, stapp03
+
+  become: yes
+
+  tasks:
+
+    - name: Create the file and set properties
+
+      file:
+
+        path: /home/web.txt
+
+        owner: "{{ ansible_user }}"
+
+        group: "{{ ansible_user }}"
+
+        mode: "0755"
+        
+        state: touch
+ansible-playbook  -i inventory playbook.yml
+ansible all -a "ls -lsd /home/web.txt" -i inventory
