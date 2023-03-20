@@ -1,0 +1,15 @@
+Question : This morning the Nautilus DevOps team rolled out a new release for one of the applications. Recently on of the customers logged a complaint which seems to be about a bug related to the recent release. Therefore, the team wants to roll back the recent release.
+
+There is a deployment named nginx-deployment; roll it back to the previous revision
+Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+1-List the available revisions of the deployment using the following command:
+kubectl rollout history deployment/nginx-deployment
+2-Identify the revision number you want to rollback to, in this case, the previous revision number.
+3-Rollback the deployment to the previous revision using the following command:
+kubectl rollout undo deployment/nginx-deployment --to-revision=<previous-revision-number>
+Replace <previous-revision-number> with the actual revision number you want to rollback to.
+
+4-Verify the status of the deployment using the following command:
+kubectl rollout status deployment/nginx-deployment
+that's it your deployment nginx-deployment rolled-back to the previous version
