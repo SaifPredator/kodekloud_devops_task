@@ -1,0 +1,20 @@
+install git package using yum on Storage server.
+
+After that create/init a git repository /opt/blog.git (use the exact name as asked and make sure not to create a bare repository).
+ssh to the storage server then
+Update your system's package list by running the command:
+sudo yum update
+Install Git using yum by running the command:
+sudo yum install git
+Verify that Git has been installed successfully by running the command:
+git --version
+To create/init a Git repository at /opt/blog.git
+cd /opt
+sudo mkdir blog.git
+Initialize the Git repository in the blog.git directory by running the command:
+sudo git init
+This will create a new Git repository in the blog.git directory.
+
+Verify that the Git repository has been initialized successfully by running the command:
+sudo git status
+should display the current status of the Git repository, which should indicate that the repository is empty.
