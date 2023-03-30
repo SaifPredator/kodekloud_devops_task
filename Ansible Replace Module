@@ -1,0 +1,44 @@
+Perform below given tasks using this playbook:
+
+We have a file /opt/data/blog.txt on app server 1. Using Ansible replace module replace string xFusionCorp to Nautilus in that file.
+
+We have a file /opt/data/story.txt on app server 2. Using Ansiblereplace module replace the string Nautilus to KodeKloud in that file.
+
+We have a file /opt/data/media.txt on app server 3. Using Ansible replace module replace string KodeKloud to xFusionCorp Industries in that file.
+cat playbook.yml
+---
+- name: Replace strings in files
+  hosts: all
+  become = true
+  tasks:
+  - name: Replace xFusionCorp with Nautilus in /opt/data/blog.txt on app server 1
+    replace:
+      path: /opt/data/blog.txt
+      regexp: 'xFusionCorp'
+      replace: 'Nautilus'
+    when: inventory_hostname == 'stapp01'
+
+  - name: Replace Nautilus with KodeKloud in /opt/data/story.txt on app server 2
+    replace:
+      path: /opt/data/story.txt
+      regexp: 'Nautilus'
+      replace: 'KodeKloud'
+    when: inventory_hostname == 'stapp02'
+
+  - name: Replace KodeKloud with xFusionCorp Industries in /opt/data/media.txt on app server 3
+    replace:
+      path: /opt/data/media.txt
+      regexp: 'KodeKloud'
+      replace: 'xFusionCorp Industries'
+    when: inventory_hostname == 'stapp03'
+    In this updated playbook, we have modified the file paths and string replacements in each task to match the requirements.
+
+In the first task, we are replacing the string "xFusionCorp" with "Nautilus" in the file "/opt/data/blog.txt" on app server 1.
+
+In the second task, we are replacing the string "Nautilus" with "KodeKloud" in the file "/opt/data/story.txt" on app server 2.
+
+In the third task, we are replacing the string "KodeKloud" with "xFusionCorp Industries" in the file "/opt/data/media.txt" on app server 3.
+
+Note that we have used the "when" condition in each task to ensure that the task is only executed on the relevant app server.
+then execute yout playbook
+ansible-plyabook -i playbook.yml
