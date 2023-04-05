@@ -1,0 +1,50 @@
+Create a pod named volume-share-datacenter.
+
+For the first container, use image ubuntu with latest tag only and remember to mention the tag i.e ubuntu:latest, container should be named as volume-container-datacenter-1, and run a sleep command for it so that it remains in running state. Volume volume-share should be mounted at path /tmp/news.
+
+For the second container, use image ubuntu with the latest tag only and remember to mention the tag i.e ubuntu:latest, container should be named as volume-container-datacenter-2, and again run a sleep command for it so that it remains in running state. Volume volume-share should be mounted at path /tmp/demo.
+
+Volume name should be volume-share of type emptyDir.
+vi volume-share-datacenter.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-share-datacenter
+spec:
+  volumes:
+    - name: volume-share
+      emptyDir: {}
+  containers:
+    - name: volume-container-datacenter-1
+      image: ubuntu:latest
+      command: ["/bin/sleep", "infinity"]
+      volumeMounts:
+        - name: volume-share
+          mountPath: /tmp/news
+    - name: volume-container-datacenter-2
+      image: ubuntu:latest
+      command: ["/bin/sleep", "infinity"]
+      volumeMounts:
+        - name: volume-share
+          mountPath: /tmp/demo
+
+After creating the pod, exec into the first container i.e volume-container-datacenter-1, and just for testing create a file news.txt with any content under the mounted path of first container i.e /tmp/news.
+
+The file news.txt should be present under the mounted path /tmp/demo on the second container volume-container-datacenter-2 as well, since they are using a shared volume.
+kubectl apply -f volume-share-datacenter.yaml
+To exec into the first container, run the following command:
+kubectl exec -it volume-share-datacenter -c volume-container-datacenter-1 bash
+This command will open a Bash shell in the first container of the volume-share-datacenter pod.
+
+Once inside the container, create a file news.txt under the /tmp/news directory:
+echo "This is some test news" > /tmp/news/news.txt
+This will create a file news.txt with some content in the /tmp/news directory of the first container.
+
+Now, exit the first container by typing exit and then exec into the second container using the following command:
+kubectl exec -it volume-share-datacenter -c volume-container-datacenter-2 bash
+Once inside the second container, navigate to the /tmp/demo directory and verify that the news.txt file is present:
+cd /tmp/demo
+ls
+This should show the news.txt file in the /tmp/demo directory, which confirms that the shared volume is working correctly.
+
+That's it! You have created a file in the first container and verified its presence in the second container, demonstrating how shared volumes can be used to share data between containers in a pod.
