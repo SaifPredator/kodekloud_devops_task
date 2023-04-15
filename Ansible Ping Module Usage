@@ -1,0 +1,25 @@
+The Nautilus DevOps team is planning to test several Ansible playbooks on different app servers in Stratos DC. 
+Before that, some pre-requisites must be met. Essentially, the team needs to set up a password-less SSH connection between Ansible controller and Ansible managed nodes. 
+One of the tickets is assigned to you; please complete the task as per details mentioned below:
+a. Jump host is our Ansible controller, and we are going to run Ansible playbooks through thor user on jump host.
+
+b.Make appropriate changes on jump host so that user thor on jump host can SSH into App Server 2 through its respective sudo user. (for example tony for app server 1).
+
+c. There is an inventory file /home/thor/ansible/inventory on jump host. 
+Using that inventory file test Ansible ping from jump host to App Server 2, make sure ping works.
+
+
+a. To enable password-less SSH access from the jump host to the App Server 2, you need to generate an SSH key pair for the thor user on the jump host. 
+You can do this by running the following command as the thor user on the jump host:
+ssh-keygen -t rsa
+You will be prompted to enter a passphrase for the key. You can leave it empty if you want.
+
+b. Once you have generated the SSH key pair, you need to copy the public key to the appropriate sudo user on the App Server 2. 
+You can do this using the following command:
+ssh-copy-id -i ~/.ssh/id_rsa.pub tony@stapp02
+
+c. Now that you have set up password-less SSH access, 
+you can test Ansible ping from the jump host to App Server 2 using the inventory file located at /home/thor/ansible/inventory.
+You can do this by running the following command:
+ansible -i /home/thor/ansible/inventory stapp02 -m ping
+Ansible should be able to connect to App Server 2 and successfully execute the ping module.
