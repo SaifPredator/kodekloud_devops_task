@@ -1,0 +1,53 @@
+One of the Nautilus DevOps team members was working to configure services on a kkloud container that is running on App Server 1 in Stratos Datacenter. 
+Due to some personal work he is on PTO for the rest of the week, but we need to finish his pending work ASAP. 
+Please complete the remaining work as per details given below:
+
+
+
+a. Install apache2 in kkloud container using apt that is running on App Server 1 in Stratos Datacenter.
+
+b. Configure Apache to listen on port 6000 instead of default http port. Do not bind it to listen on specific IP or hostname only, i.e it should listen on localhost, 127.0.0.1, container ip, etc.
+
+c. Make sure Apache service is up and running inside the container. Keep the container in running state at the end.
+
+Step 1: Access the kkloud container on App Server 1
+You can use the following command to access the kkloud container using Docker's "docker exec" command:
+docker exec -it kkloud bash
+
+This will start an interactive bash session inside the kkloud container, allowing you to run commands directly within the container.
+
+Step 2: Install Apache2
+Inside the kkloud container, you can install Apache2 using the "apt" package manager with the following command:
+
+apt update
+apt install apache2 -y
+
+This will update the package list and install Apache2 in the container.
+
+Step 3: Configure Apache to listen on port 6000
+To configure Apache to listen on port 6000, you can edit the Apache configuration file. Inside the kkloud container, run the following command:
+vim /etc/apache2/ports.conf
+
+(inside the container's shell, you can run the following command to install Vim:
+
+apt update && apt install vim -y)
+This will open the ports.conf file in the nano text editor. Look for the line that says "Listen 80" and change it to "Listen 6000".
+Save the file and exit the text editor.
+
+Step 4: Start Apache service
+Inside the kkloud container, you can start the Apache service using the following command:
+service apache2 start
+This will start the Apache service inside the container.
+
+Step 5: Verify Apache service is running
+You can verify if the Apache service is running and listening on port 6000 inside the kkloud container by running the following command:
+service apache2 status
+
+This should display the status of the Apache service, indicating if it is running or not.
+
+Step 6: Keep the container in a running state
+At the end, you can exit the kkloud container by running the "exit" command. The container will continue to run in the background with Apache service listening on port 6000, as per the configurations made above.
+
+That's it! You have completed the pending work of installing Apache2, configuring it to listen on port 6000, and ensuring that the Apache service is running inside the kkloud container on App Server 1 in Stratos Datacenter. 
+Please make sure to thoroughly test the configuration to ensure it meets your requirements before deploying it to production.
+
