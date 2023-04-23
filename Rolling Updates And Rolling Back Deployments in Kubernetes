@@ -1,0 +1,37 @@
+There is a production deployment planned for next week. 
+The Nautilus DevOps team wants to test the deployment update and rollback on Dev environment first so that they can identify the risks in advance. 
+Below you can find more details about the plan they want to execute.
+
+
+Create a namespace xfusion.
+Create a deployment called httpd-deploy under this new namespace, It should have one container called httpd, use httpd:2.4.27 image and 4 replicas. 
+The deployment should use RollingUpdate strategy with maxSurge=1, and maxUnavailable=2. 
+Also create a NodePort type service named httpd-service and expose the deployment on nodePort: 30008.
+
+Now upgrade the deployment to version httpd:2.4.43 using a rolling update.
+
+Finally, once all pods are updated undo the recent update and roll back to the previous/original version.
+
+Step 1: Create a namespace called xfusion:
+kubectl create namespace xfusion
+
+Step 2: Create the deployment with httpd:2.4.27 image, 4 replicas, and RollingUpdate strategy with maxSurge=1 and maxUnavailable=2:
+kubectl create deployment httpd-deploy --image=httpd:2.4.27 --replicas=4 -n xfusion
+kubectl patch deployment httpd-deploy -p '{"spec": {"strategy": {"type": "RollingUpdate", "rollingUpdate": {"maxSurge": 1, "maxUnavailable": 2}}}}' -n xfusion
+
+Step 3: Create a NodePort type service named httpd-service to expose the deployment on nodePort: 30008:
+kubectl expose deployment httpd-deploy --type=NodePort --port=80 --target-port=80 --name=httpd-service --node-port=30008 -n xfusion
+
+Step 4: Perform a rolling update to upgrade the deployment to version httpd:2.4.43:
+kubectl set image deployment/httpd-deploy httpd=httpd:2.4.43 -n xfusion
+
+Step 5: Wait for all pods to be updated to the new version:
+kubectl get pods -n xfusion -l app=httpd-deploy
+
+Ensure that all pods are in the "Running" state and ready.
+
+Step 6: Once all pods are updated, undo the recent update and roll back to the previous/original version:
+kubectl rollout undo deployment/httpd-deploy -n xfusion
+
+Kubernetes will automatically roll back the deployment to the previous/original version, 
+and the rolling update process will start, reverting the pods to the previous version.
