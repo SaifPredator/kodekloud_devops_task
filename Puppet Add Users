@@ -1,0 +1,116 @@
+Question:  As a new teammate has joined Nautilus application development team,
+the application development team has asked the DevOps team to create a new user for the new teammate on all application servers in Stratos Datacenter. 
+The task needs to be performed using Puppet only. You can find more details below about the task.
+
+Create a Puppet programming file beta.pp under /etc/puppetlabs/code/environments/production/manifests directory on master node i.e Jump Server,
+and using Puppet user resource add a user on all app servers as mentioned below:
+Create a user anita and set its UID to 1851 on all Puppet agent nodes i.e all App Servers.
+Note: Please perform this task using beta.pp only, do not create any separate inventory file.
+Solution:  
+
+1. Go through the folder mentioned in task and create puppet files  
+
+root@jump_host /# cd /etc/puppetlabs/code/environments/production/manifests/
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# ll
+
+total 0
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests#
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# vi beta.pp
+
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# cat beta.pp
+
+class user_creator {
+
+user { 'anita':
+
+ensure   => present,
+
+uid => 1851,
+
+ }
+
+}
+
+node 'stapp01.stratos.xfusioncorp.com', 'stapp02.stratos.xfusioncorp.com', 'stapp03.stratos.xfusioncorp.com' {
+
+include user_creator
+
+}
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# 
+
+
+2. Validate the puppet files by below command.
+root@jump_host /etc/puppetlabs/code/environments/production/manifests# puppet parser validate beta.pp
+
+root@jump_host /etc/puppetlabs/code/environments/production/manifests#
+
+3. Login on all  App server  (stapp01, stapp02, stapp03 ) & switch to root  user 
+
+
+root@jump_host /# ssh tony@stapp01
+
+The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
+
+ECDSA key fingerprint is SHA256:w9cDRojDoclOxdu1W23Ns2HPyANPrDzhk9VfqtTDoJQ.
+
+ECDSA key fingerprint is MD5:a8:3b:55:35:c2:5c:56:76:c8:d0:78:13:7a:4d:8b:e1.
+
+Are you sure you want to continue connecting (yes/no)? yes
+
+Warning: Permanently added 'stapp01,172.16.238.10' (ECDSA) to the list of known hosts.
+
+tony@stapp01's password:
+
+[tony@stapp01 ~]$ sudo su -
+
+We trust you have received the usual lecture from the local System
+
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+
+    #2) Think before you type.
+
+    #3) With great power comes great responsibility.
+
+[sudo] password for tony:
+
+[root@stapp01 ~]#
+
+4. Run Puppet agent to pull the configuration from puppet server 
+
+
+[root@stapp01 ~]# puppet agent -tv
+
+Info: Using configured environment 'production'
+
+Info: Retrieving pluginfacts
+
+Info: Retrieving plugin
+
+Info: Retrieving locales
+
+Info: Loading facts
+
+Info: Caching catalog for stapp01.stratos.xfusioncorp.com
+
+Info: Applying configuration version '1624860136'
+
+Notice: /Stage[main]/User_creator/User[anita]/ensure: created
+
+Notice: Applied catalog in 0.09 seconds
+
+[root@stapp01 ~]#
+
+5. Validate the task by running
+
+
+[root@stapp01 ~]# cat /etc/passwd | grep anita
+
+anita:x:1851:1851::/home/anita:/bin/bash
+
