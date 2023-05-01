@@ -1,0 +1,14 @@
+Nautilus project developers are planning to start testing on a new project. 
+As per their meeting with the DevOps team, they want to test containerized environment application features.
+As per details shared with DevOps team, we need to accomplish the following task:
+a. Pull busybox:musl image on App Server 1 in Stratos DC and re-tag (create new tag) this image as busybox:blog.
+
+Pull the "busybox:musl" image by running the following command:
+docker pull busybox:musl
+
+Once the image has been downloaded, re-tag it as "busybox:blog" using the docker tag command
+docker tag busybox:musl busybox:blog
+
+Verify that the new tag has been created by running the docker images command:
+docker images
+You should see the "busybox:blog" image listed along with its repository, tag, and other details.
