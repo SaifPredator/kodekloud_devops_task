@@ -1,0 +1,35 @@
+Create a namespace named dev and create a POD under it; name the pod dev-nginx-pod and use nginx image with latest tag only and remember to mention tag i.e nginx:latest.
+
+Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+To create a namespace named dev and a Pod named dev-nginx-pod with the nginx image using the latest tag, follow the steps below:
+
+First, create the namespace using the following command:
+
+
+kubectl create namespace dev
+Create a YAML file named dev-nginx-pod.yaml with the following contents:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-nginx-pod
+  namespace: dev
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+This YAML file specifies a Pod with a single container running the nginx image with the latest tag.
+
+Apply the YAML file using the following command:
+
+kubectl apply -f dev-nginx-pod.yaml
+This command will create the Pod in the dev namespace.
+
+You can verify that the Pod has been created by running the following command:
+
+
+kubectl get pods -n dev
+This will show the list of Pods in the dev namespace, which should include the dev-nginx-pod Pod that we just created.
